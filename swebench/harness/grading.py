@@ -34,6 +34,16 @@ def test_failed(case: str, sm: dict[str, str]) -> bool:
     )
 
 
+def get_logs_eval_helper(content: str):
+    test_outputs = content.split(START_TEST_OUTPUT)
+    all_outputs = []
+    for test_output in test_outputs:
+        if END_TEST_OUTPUT in test_output:
+            all_outputs.append(test_output.split(END_TEST_OUTPUT)[0])
+    return "\n".join(all_outputs)
+
+
+
 # MARK: Evaluation report functions
 def get_logs_eval(test_spec: TestSpec, log_fp: str) -> tuple[dict[str, str], bool]:
     """
@@ -75,7 +85,9 @@ def get_logs_eval(test_spec: TestSpec, log_fp: str) -> tuple[dict[str, str], boo
             return {}, False
 
         # Get status map of evaluation results
-        content = content.split(test_cmd)[-1]
+        # hacky way to get the test output
+        content = get_logs_eval_helper(content)
+        # change to split(test_cmd)[0] for astropy
         return log_parser(content, test_spec), True
 
 
