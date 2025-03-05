@@ -26,8 +26,7 @@ REMOTE_SANDBOX_ENTRYPOINT_PATH = f"/root/{SANDBOX_ENTRYPOINT}.py"
 
 app = modal.App("swebench-evaluation")
 
-# we want to install the local swebench directory to the image
-swebench_image = modal.Image.debian_slim().pip_install("tenacity").add_local_dir(Path(__file__).parent.parent.parent.parent, remote_path='/root/swebench', copy=True).run_commands("pip install -e /root/swebench")
+swebench_image = modal.Image.debian_slim().pip_install("swebench", "tenacity")
 
 from swebench.harness.constants import (
     APPLY_PATCH_FAIL,
