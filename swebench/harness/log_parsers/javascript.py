@@ -1,10 +1,8 @@
 import re
 
-from swebench.harness.constants import (
-    TestStatus,
-)
+from swebench.harness.constants import TestStatus
 from swebench.harness.test_spec.test_spec import TestSpec
-from swebench.harness.log_parsers.utils import ansi_escape
+from swebench.harness.utils import ansi_escape
 
 
 def parse_log_calypso(log: str, test_spec: TestSpec) -> dict[str, str]:
@@ -86,7 +84,7 @@ def parse_log_marked(log: str, test_spec: TestSpec) -> dict[str, str]:
     return test_status_map
 
 
-def parse_log_p5js(log_content: str, test_spec: TestSpec) -> dict[str, str]:
+def parse_log_p5js(log_content: str) -> dict[str, str]:
     def remove_json_blocks(log):
         filtered_lines = []
         in_json_block = False
@@ -136,7 +134,6 @@ def parse_log_p5js(log_content: str, test_spec: TestSpec) -> dict[str, str]:
             last_line_indent = line_indent
         return True
 
-    test_name_pat = re.compile(r"^(.*?)(?:\s*\(\d+(?:[A-Za-z]+)\))?$")
     log_content = ansi_escape(log_content)
     log_content = remove_json_blocks(log_content)
     log_content = remove_xml_blocks(log_content)
