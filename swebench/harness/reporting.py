@@ -62,7 +62,7 @@ def make_run_report(
             / prediction[KEY_INSTANCE_ID]
             / LOG_REPORT
         )
-        if report_file.exists():
+        if report_file.exists() and report_file.stat().st_size > 0:
             # If report file exists, then the instance has been run
             completed_ids.add(instance_id)
             report = json.loads(report_file.read_text())
