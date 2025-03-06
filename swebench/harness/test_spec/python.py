@@ -308,9 +308,9 @@ def make_eval_script_list_py(
     eval_commands += [
         reset_tests_command,
         apply_test_patch_command,
-        f"echo '{START_TEST_OUTPUT}'", # allows for astropy test output to be parsed
+        f": '{START_TEST_OUTPUT}'",
         test_command,
-        f"echo '{END_TEST_OUTPUT}'", # allows for astropy test output to be parsed
+        f": '{END_TEST_OUTPUT}'",
         reset_tests_command,  # Revert tests after done, leave the repo in the same state as before
     ]
     return eval_commands
