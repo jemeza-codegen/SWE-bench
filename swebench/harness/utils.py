@@ -20,14 +20,37 @@ from unidiff import PatchSet
 
 load_dotenv()
 
-INSTANCE_IDS_TO_EXCLUDE = [
+# These instance IDs are known to fail even with the gold patch
+INSTANCE_IDS_TO_EXCLUDE = {
+    # SWE-Bench
+    "princeton-nlp/SWE-bench": [],
     # SWE-Bench Lite
-    "matplotlib__matplotlib-23964",  # hangs
-    "psf__requests-1963",  # test failure on gold patch
-    "psf__requests-2674",  # test failure on gold patch
-    "pydata__xarray-4094",  # test failure on gold patch
-    "pydata__xarray-4493",  # test failure on gold patch
-]
+    "princeton-nlp/SWE-bench_Lite": [
+        "matplotlib__matplotlib-23964",  # hangs
+        "psf__requests-1963",  # test failure with gold patch
+        "psf__requests-2674",  # test failure with gold patch
+        "pydata__xarray-4094",  # test failure with gold patch, also a part of SWE-Bench Verified
+        "pydata__xarray-4493",  # test failure with gold patch
+    ],
+    # SWE-Bench Verified
+    "princeton-nlp/SWE-bench_Verified": [
+        "matplotlib__matplotlib-26466",  # hangs
+        "astropy__astropy-7606",  # expects "astropy/units/tests/test_units.py::test_compose_roundtrip[]" to pass but it doesn't appear in the test log, all other tests pass
+        "astropy__astropy-8707",  # test failure with gold patch
+        "astropy__astropy-8872",  # test failure with gold patch
+        "matplotlib__matplotlib-20488", # test failure with gold patch
+        "pydata__xarray-2905",  # expects "xarray/tests/test_variable.py::TestVariableWithSparse::test_as_sparse" to pass but it doesn't appear in the test log, all other tests pass
+        "pydata__xarray-3305",  # expects test to pass that don't appear in the test log, all other tests pass
+        "pydata__xarray-3993",  # expects test to pass that don't appear in the test log, all other tests pass
+        "pydata__xarray-4094",  # test failure with gold patch, also a part of SWE-Bench Lite
+        "pydata__xarray-6721",  # expects test to pass that don't appear in the test log, all other tests pass
+        "pydata__xarray-6744",  # test patch not applied properly ?
+        "pydata__xarray-6938",  # expects test to pass that don't appear in the test log, all other tests pass
+        "pydata__xarray-6992",  # expects test to pass that don't appear in the test log, all other tests pass
+        "sphinx-doc__sphinx-10323",  # test failure with gold patch
+        "sphinx-doc__sphinx-10435",  # test failure with gold patch
+    ],
+}
 
 
 class EvaluationError(Exception):
@@ -57,7 +80,7 @@ def get_predictions_from_file(predictions_path: str, dataset_name: str, split: s
                 KEY_MODEL: "gold",
             }
             for datum in dataset
-            if datum[KEY_INSTANCE_ID] not in INSTANCE_IDS_TO_EXCLUDE
+            if datum[KEY_INSTANCE_ID] not in INSTANCE_IDS_TO_EXCLUDE[dataset_name]
         ]
     if predictions_path.endswith(".json"):
         with open(predictions_path, "r") as f:
